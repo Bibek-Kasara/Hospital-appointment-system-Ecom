@@ -1,14 +1,25 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Calendar, Clock, Shield, Users, ArrowRight, Bell } from 'lucide-react';
 import Button from '../../components/ui/Button';
+import { departmentApi } from '../../services';
+import type { Department } from '../../types';
 
 export default function HomePage() {
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+  useEffect(() => {
+    departmentApi.list({ limit: '50' }).then(({ data }) => {
+      if (data.success && data.data) setDepartments(data.data.items);
+    });
+  }, []);
+
   return (
     <div>
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-teal-600 text-white">
+      <section className="relative overflow-hidden bg-linear-to-br from-primary-900 via-primary-800 to-teal-600 text-white">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
         <div className=" flex justify-around relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-          <div className="max-w-2xl mt-6">
+          <div className="max-w-2xl mt-10">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
               Quality Healthcare, One Click Away
             </h1>
@@ -23,7 +34,7 @@ export default function HomePage() {
                 </Button>
               </Link>
               <Link to="/doctors">
-                <Button size="lg" variant="outline" className="border-white bg-white text-blue-600 hover:bg-blue-900 hover:text-blue">
+                <Button size="lg" variant="outline" className="border-white bg-white">
                   Find a Doctor
                   <ArrowRight className="h-5 w-5" />
                 </Button>
@@ -60,13 +71,13 @@ export default function HomePage() {
           <h2 className="text-2xl font-bold text-gray-900">Our Departments</h2>
           <p className="mt-2 text-gray-600">Comprehensive healthcare across multiple specialties</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {['General Medicine', 'Cardiology', 'Orthopedics', 'Pediatrics', 'Dermatology', 'Neurology'].map((dept) => (
+            {departments.map((dept) => (
               <Link
-                key={dept}
-                to="/departments"
+                key={dept._id}
+                to={`/doctors?department=${dept._id}`}
                 className="rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
               >
-                <h3 className="font-medium text-gray-900">{dept}</h3>
+                <h3 className="font-medium text-gray-900">{dept.name}</h3>
                 <p className="mt-1 text-sm text-primary-600">View details →</p>
               </Link>
             ))}

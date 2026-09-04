@@ -10,19 +10,26 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-let accessToken: string | null = localStorage.getItem('accessToken');
+let accessToken: string | null = sessionStorage.getItem('accessToken');
+let refreshToken: string | null = sessionStorage.getItem('refreshToken');
 let refreshPromise: Promise<string | null> | null = null;
 
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
   if (token) {
-    localStorage.setItem('accessToken', token);
+    sessionStorage.setItem('accessToken', token);
   } else {
-    localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
   }
 };
 
 export const getAccessToken = () => accessToken;
+
+export const setRefreshToken = (token: string | null) => {
+  refreshToken = token;
+  if (token) sessionStorage.setItem('refreshToken', token);
+  else sessionStorage.removeItem('refreshToken');
+};
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (accessToken && config.headers) {
@@ -33,18 +40,20 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    const { data } = await axios.post<ApiResponse<{ accessToken: string }>>(
+    const { data } = await axios.post<ApiResponse<{ accessToken: string; refreshToken: string }>>(
       `${API_BASE_URL}/auth/refresh`,
-      {},
+      { refreshToken },
       { withCredentials: true },
     );
     if (data.success && data.data?.accessToken) {
       setAccessToken(data.data.accessToken);
+      if (data.data.refreshToken) setRefreshToken(data.data.refreshToken);
       return data.data.accessToken;
     }
     return null;
   } catch {
     setAccessToken(null);
+    setRefreshToken(null);
     return null;
   }
 };

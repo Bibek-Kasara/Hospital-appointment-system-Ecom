@@ -4,6 +4,16 @@ export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
+export const APPOINTMENT_SLOT_DURATION_MINUTES = 20;
+
+export function getLocalDateInputValue(date = new Date()) {
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+}
+
+export function getLocalTimeInputValue(date = new Date()) {
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
 export function formatDate(date: string | Date) {
   return new Date(date).toLocaleDateString('en-NP', {
     weekday: 'short',

@@ -10,7 +10,7 @@ import Textarea from '../../components/ui/Textarea';
 import Alert from '../../components/ui/Alert';
 import Card from '../../components/ui/Card';
 import { LoadingPage, Skeleton } from '../../components/ui/Spinner';
-import { formatDate, formatTime, getDoctorImage } from '../../utils';
+import { formatDate, formatTime, getDoctorImage, getLocalDateInputValue } from '../../utils';
 
 const steps = ['Department', 'Doctor', 'Date & Time', 'Confirm'];
 
@@ -60,7 +60,7 @@ export default function BookAppointmentPage() {
   useEffect(() => {
     if (!selectedDoctor) return;
     setLoading(true);
-    const params: Record<string, string> = { available: 'true', limit: '100' };
+    const params: Record<string, string> = { limit: '100' };
     if (selectedDate) params.date = selectedDate;
     doctorApi.getSlots(selectedDoctor, params).then(({ data }) => {
       if (data.success && data.data) setSlots(data.data.items);
@@ -170,7 +170,7 @@ export default function BookAppointmentPage() {
             <Input
               label="Appointment date"
               type="date"
-              min={new Date().toISOString().split('T')[0]}
+              min={getLocalDateInputValue()}
               value={selectedDate}
               onChange={(e) => { setSelectedDate(e.target.value); setSelectedSlot(''); }}
               className="mt-4 max-w-xs"
@@ -184,8 +184,15 @@ export default function BookAppointmentPage() {
             ) : (
               <div className="mt-4 flex flex-wrap gap-2">
                 {slots.map((slot) => (
-                  <button key={slot._id} type="button" onClick={() => setSelectedSlot(slot._id)} className={`rounded-lg border px-3 py-2 text-sm transition-colors ${selectedSlot === slot._id ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 hover:border-primary-300'}`}>
+                  <button
+                    key={slot._id}
+                    type="button"
+                    disabled={slot.is_booked}
+                    onClick={() => setSelectedSlot(slot._id)}
+                    className={`rounded-lg border px-3 py-2 text-sm transition-colors ${slot.is_booked ? 'cursor-not-allowed border-gray-300 bg-gray-200 text-gray-500' : selectedSlot === slot._id ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 hover:border-primary-300'}`}
+                  >
                     {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
+                    {slot.is_booked && <span className="ml-1 text-xs">(Booked)</span>}
                   </button>
                 ))}
               </div>

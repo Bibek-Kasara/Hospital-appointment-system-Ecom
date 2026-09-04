@@ -15,9 +15,9 @@ const departments = [
 
 const doctorsData = [
   {
-    full_name: 'Dr. Ram Sharma',
+    full_name: 'Dr. Anil Rana',
     specialization: 'General Physician',
-    email: 'ram.sharma@sahidhospital.gov.np',
+    email: 'anil.rana@sahidhospital.gov.np',
     phone: '9801111111',
     qualification: 'MBBS, MD',
     experience_years: 15,
@@ -25,9 +25,9 @@ const doctorsData = [
     deptIndex: 0,
   },
   {
-    full_name: 'Dr. Sita Thapa',
+    full_name: 'Dr. Aryan Saud',
     specialization: 'Cardiologist',
-    email: 'sita.thapa@sahidhospital.gov.np',
+    email: 'aryan.saud@sahidhospital.gov.np',
     phone: '9802222222',
     qualification: 'MBBS, DM Cardiology',
     experience_years: 12,
@@ -35,9 +35,9 @@ const doctorsData = [
     deptIndex: 1,
   },
   {
-    full_name: 'Dr. Hari Karki',
+    full_name: 'Dr. Safal Shyangwa',
     specialization: 'Orthopedic Surgeon',
-    email: 'hari.karki@sahidhospital.gov.np',
+    email: 'safal.shyangwa@sahidhospital.gov.np',
     phone: '9803333333',
     qualification: 'MBBS, MS Orthopedics',
     experience_years: 10,
@@ -45,9 +45,9 @@ const doctorsData = [
     deptIndex: 2,
   },
   {
-    full_name: 'Dr. Gita Rai',
+    full_name: 'Dr. Yogesh Shah Thakuri',
     specialization: 'Pediatrician',
-    email: 'gita.rai@sahidhospital.gov.np',
+    email: 'yogesh.shah.thakuri@sahidhospital.gov.np',
     phone: '9804444444',
     qualification: 'MBBS, MD Pediatrics',
     experience_years: 8,
@@ -55,9 +55,9 @@ const doctorsData = [
     deptIndex: 3,
   },
   {
-    full_name: 'Dr. Bijay Lama',
+    full_name: 'Dr. Shaan Maharjna',
     specialization: 'Dermatologist',
-    email: 'bijay.lama@sahidhospital.gov.np',
+    email: 'shaan.maharjna@sahidhospital.gov.np',
     phone: '9805555555',
     qualification: 'MBBS, MD Dermatology',
     experience_years: 7,
@@ -65,9 +65,9 @@ const doctorsData = [
     deptIndex: 4,
   },
   {
-    full_name: 'Dr. Anjali Gurung',
+    full_name: 'Dr. Shandesh Shrestha',
     specialization: 'Neurologist',
-    email: 'anjali.gurung@sahidhospital.gov.np',
+    email: 'shandesh.shrestha@sahidhospital.gov.np',
     phone: '9806666666',
     qualification: 'MBBS, DM Neurology',
     experience_years: 11,
@@ -156,7 +156,7 @@ const seed = async () => {
     console.log('\n✅ Seed completed successfully!\n');
     console.log('Demo credentials (dev only):');
     console.log('  Admin:  admin@sahidhospital.gov.np / Admin@123');
-    console.log('  Doctor: ram.sharma@sahidhospital.gov.np / Doctor@123');
+    console.log('  Doctor: anil.rana@sahidhospital.gov.np / Doctor@123');
     console.log(`  Created ${createdDepts.length} departments`);
     console.log(`  Created ${createdDoctors.length} doctors`);
     console.log(`  Created ${slots.length} slots\n`);

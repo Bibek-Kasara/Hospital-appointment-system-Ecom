@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { authApi, userApi } from '../services';
-import { setAccessToken, getAccessToken } from '../services/api';
+import { setAccessToken, setRefreshToken, getAccessToken } from '../services/api';
 import type { User, UserRole } from '../types';
 
 interface AuthState {
@@ -27,6 +27,7 @@ export const login = createAsyncThunk(
       const { data } = await authApi.login(email, password);
       if (data.success && data.data) {
         setAccessToken(data.data.accessToken);
+        setRefreshToken(data.data.refreshToken);
         return data.data.user;
       }
       return rejectWithValue(data.message || 'Login failed');
@@ -44,6 +45,7 @@ export const register = createAsyncThunk(
       const { data } = await authApi.register(formData);
       if (data.success && data.data) {
         setAccessToken(data.data.accessToken);
+        setRefreshToken(data.data.refreshToken);
         return data.data.user;
       }
       return rejectWithValue(data.message || 'Registration failed');
@@ -61,6 +63,7 @@ export const fetchMe = createAsyncThunk('auth/fetchMe', async (_, { rejectWithVa
     return rejectWithValue('Failed to fetch profile');
   } catch {
     setAccessToken(null);
+    setRefreshToken(null);
     return rejectWithValue('Session expired');
   }
 });

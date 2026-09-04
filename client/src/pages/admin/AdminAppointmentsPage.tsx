@@ -13,6 +13,8 @@ export default function AdminAppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [error, setError] = useState('');
+  const [cancelId, setCancelId] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState(false);
 
   const fetch = () => {
     setLoading(true);
@@ -25,14 +27,18 @@ export default function AdminAppointmentsPage() {
 
   useEffect(() => { fetch(); }, [statusFilter]);
 
-  const handleCancel = async (id: string) => {
-    if (!confirm('Cancel this appointment?')) return;
+  const handleCancel = async () => {
+    if (!cancelId) return;
+    setCancelling(true);
     try {
-      await appointmentApi.cancel(id);
+      await appointmentApi.cancel(cancelId);
+      setCancelId(null);
       fetch();
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
       setError(e.response?.data?.message || 'Cancel failed');
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -78,12 +84,24 @@ export default function AdminAppointmentsPage() {
                     )}
                   </div>
                   {!['cancelled', 'completed'].includes(apt.status) && (
-                    <Button variant="danger" size="sm" onClick={() => handleCancel(apt._id)}>Cancel</Button>
+                    <Button variant="danger" size="sm" onClick={() => setCancelId(apt._id)}>Cancel</Button>
                   )}
                 </div>
               </Card>
             );
           })}
+        </div>
+      )}
+
+      {cancelId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+          <Card className="w-full max-w-md" title="Cancel Appointment?">
+            <p id="cancel-title" className="text-sm text-gray-600">Are you sure you want to cancel this appointment?</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setCancelId(null)} disabled={cancelling}>Keep Appointment</Button>
+              <Button variant="danger" onClick={handleCancel} loading={cancelling}>Cancel Appointment</Button>
+            </div>
+          </Card>
         </div>
       )}
     </div>

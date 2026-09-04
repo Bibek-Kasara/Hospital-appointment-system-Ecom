@@ -1,4 +1,4 @@
-import api, { setAccessToken } from './api';
+import api, { setAccessToken, setRefreshToken } from './api';
 import type {
   ApiResponse,
   User,
@@ -12,11 +12,12 @@ import type {
 
 export const authApi = {
   register: (data: Record<string, unknown>) =>
-    api.post<ApiResponse<{ user: User; accessToken: string }>>('/auth/register', data),
+    api.post<ApiResponse<{ user: User; accessToken: string; refreshToken: string }>>('/auth/register', data),
   login: (email: string, password: string) =>
-    api.post<ApiResponse<{ user: User; accessToken: string }>>('/auth/login', { email, password }),
+    api.post<ApiResponse<{ user: User; accessToken: string; refreshToken: string }>>('/auth/login', { email, password }),
   logout: () => {
     setAccessToken(null);
+    setRefreshToken(null);
     return api.post('/auth/logout');
   },
 };

@@ -482,8 +482,8 @@ All responses follow: `{ "success": boolean, "data": ..., "message": string }`
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | `admin@sahidhospital.gov.np` | `Admin@123` |
-| Doctor | `ram.sharma@sahidhospital.gov.np` | `Doctor@123` |
+| Admin | `admin@example.com` | `DemoAdmin@123` |
+| Doctor | `anil.rana@example.com` | `DemoDoctor@123` |
 
 > Patients must register via `/register`. Any email not in the doctor/admin collections is treated as a patient registration.
 
@@ -600,10 +600,9 @@ SOFTWARE.
 
 ## Author / Contact
 
-**Author:** [Your Name]
+**Author:** Bibek kasara
 
-**Email:** your.email@example.com
-
+**Email:** bibekasara2060@gmail.com
 **Institution:** CSIT — E-Governance Project
 
 For questions or feedback, open an issue on the repository or contact the author above.

@@ -75,7 +75,7 @@ export default function LoginPage() {
         <div className="mt-4 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
           <p className="font-medium">Demo credentials:</p>
           <p>Admin: admin@sahidhospital.gov.np / Admin@123</p>
-          <p>Doctor: ram.sharma@sahidhospital.gov.np / Doctor@123</p>
+          <p>Doctor: anil.rana@sahidhospital.gov.np / Doctor@123</p>
         </div>
       </Card>
     </div>

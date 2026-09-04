@@ -15,7 +15,7 @@ const appointmentSchema = new Schema<IAppointment>(
   {
     patient_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     doctor_id: { type: Schema.Types.ObjectId, ref: 'Doctor', required: true },
-    slot_id: { type: Schema.Types.ObjectId, ref: 'Slot', required: true, unique: true },
+    slot_id: { type: Schema.Types.ObjectId, ref: 'Slot', required: true },
     status: {
       type: String,
       enum: ['pending', 'confirmed', 'completed', 'cancelled', 'no-show'],
@@ -30,5 +30,13 @@ const appointmentSchema = new Schema<IAppointment>(
 
 appointmentSchema.index({ patient_id: 1, status: 1 });
 appointmentSchema.index({ doctor_id: 1, status: 1 });
+appointmentSchema.index(
+  { slot_id: 1 },
+  {
+    name: 'active_slot_unique',
+    unique: true,
+    partialFilterExpression: { status: { $in: ['pending', 'confirmed', 'completed', 'no-show'] } },
+  },
+);
 
 export const Appointment = mongoose.model<IAppointment>('Appointment', appointmentSchema);

@@ -22,9 +22,9 @@ export default function DashboardLayout({ navItems, title }: DashboardLayoutProp
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform border-r border-gray-200 bg-white transition-transform lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col border-r border-gray-200 bg-white transition-transform lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -32,7 +32,7 @@ export default function DashboardLayout({ navItems, title }: DashboardLayoutProp
           <Heart className="h-6 w-6 text-primary-600" />
           <span className="font-bold text-gray-900">{title}</span>
         </div>
-        <nav className="space-y-1 p-4">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-4">
           {navItems.map((item) => (
             <Link
               key={item.to}
@@ -61,7 +61,7 @@ export default function DashboardLayout({ navItems, title }: DashboardLayoutProp
         />
       )}
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
         <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 lg:px-8">
           <button className="rounded-lg p-2 lg:hidden" onClick={() => setSidebarOpen(true)}>
             <Menu className="h-6 w-6" />
@@ -70,7 +70,7 @@ export default function DashboardLayout({ navItems, title }: DashboardLayoutProp
             ← Back to Website
           </Link>
         </header>
-        <main className="flex-1 p-4 lg:p-8">
+        <main className="min-w-0 flex-1 overflow-y-auto p-4 lg:p-8">
           <Outlet />
         </main>
       </div>

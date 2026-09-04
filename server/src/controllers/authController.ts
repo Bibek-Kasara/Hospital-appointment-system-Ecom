@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, refreshCookieOptions);
     sendSuccess(
       res,
-      { user: result.user, accessToken: result.accessToken },
+      { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken },
       'Registration successful',
       201,
     );
@@ -24,7 +24,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const { email, password } = req.body;
     const result = await authService.login(email, password);
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, refreshCookieOptions);
-    sendSuccess(res, { user: result.user, accessToken: result.accessToken }, 'Login successful');
+    sendSuccess(res, { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken }, 'Login successful');
   } catch (error) {
     next(error);
   }
@@ -32,13 +32,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const refresh = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.cookies[REFRESH_COOKIE_NAME];
+    const token = req.body.refreshToken || req.cookies[REFRESH_COOKIE_NAME];
     if (!token) {
       throw new AppError('Refresh token required', 401);
     }
     const result = await authService.refreshTokens(token);
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, refreshCookieOptions);
-    sendSuccess(res, { accessToken: result.accessToken }, 'Token refreshed');
+    sendSuccess(res, { accessToken: result.accessToken, refreshToken: result.refreshToken }, 'Token refreshed');
   } catch (error) {
     next(error);
   }

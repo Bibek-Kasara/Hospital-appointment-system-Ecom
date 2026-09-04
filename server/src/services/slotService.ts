@@ -6,6 +6,7 @@ import {
   minutesToTime,
   timeToMinutes,
 } from '../config/scheduling.js';
+import { getSlotDate } from '../config/scheduling.js';
 
 export const getDoctorSlots = async (
   doctorId: string,
@@ -28,14 +29,18 @@ export const getDoctorSlots = async (
     const nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 1);
     filter.slot_date = { $gte: date, $lt: nextDate };
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) {
+      const currentTime = `${today.getHours().toString().padStart(2, '0')}:${today.getMinutes().toString().padStart(2, '0')}`;
+      (filter as { start_time?: { $gt: string } }).start_time = { $gt: currentTime };
+    }
   }
 
   if (query.available === 'true') {
     filter.is_booked = false;
-    filter.slot_date = {
-      ...(filter.slot_date as Record<string, Date> | undefined),
-      $gte: new Date(new Date().setHours(0, 0, 0, 0)),
-    };
+    const slotDateFilter = (filter.slot_date as Record<string, Date> | undefined) || {};
+    slotDateFilter.$gte = slotDateFilter.$gte || new Date(new Date().setHours(0, 0, 0, 0));
+    filter.slot_date = slotDateFilter;
   }
 
   const [items, total] = await Promise.all([
@@ -60,6 +65,9 @@ export const createSlot = async (
   if (timeToMinutes(data.end_time) - timeToMinutes(data.start_time) !== APPOINTMENT_SLOT_DURATION_MINUTES) {
     throw new AppError(`Slots must be ${APPOINTMENT_SLOT_DURATION_MINUTES} minutes long`, 400);
   }
+  if (getSlotDate(slotDate, data.start_time) <= new Date()) {
+    throw new AppError('Availability cannot start in the past', 400);
+  }
 
   const existing = await Slot.findOne({
     doctor_id: doctorId,
@@ -83,6 +91,12 @@ export const createAvailability = async (
   const start = timeToMinutes(data.start_time);
   const end = timeToMinutes(data.end_time);
   if (end <= start) throw new AppError('End time must be after start time', 400);
+  if (end - start < APPOINTMENT_SLOT_DURATION_MINUTES) {
+    throw new AppError(`Availability must allow at least one ${APPOINTMENT_SLOT_DURATION_MINUTES}-minute slot`, 400);
+  }
+  if (getSlotDate(new Date(data.slot_date), data.start_time) <= new Date()) {
+    throw new AppError('Availability cannot start in the past', 400);
+  }
 
   const slots = [];
   for (let current = start; current + APPOINTMENT_SLOT_DURATION_MINUTES <= end; current += APPOINTMENT_SLOT_DURATION_MINUTES) {
